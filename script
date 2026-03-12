@@ -2768,44 +2768,29 @@ function BlockPlayer(Selected)
 end
 
 -- SMALLER Block Player Button
-local BlockButtonButton = Instance.new("TextButton")
+local BlockButtonButton = Instance.new('TextButton')
 BlockButtonButton.Size = UDim2.new(1, 0, 0, 22)
 BlockButtonButton.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
 BlockButtonButton.BackgroundTransparency = 0.2
-BlockButtonButton.Text = "Block Player"
+BlockButtonButton.Text = 'Block Player'
 BlockButtonButton.Font = Enum.Font.FredokaOne
 BlockButtonButton.TextSize = 10
 BlockButtonButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 BlockButtonButton.Parent = controlFrame
-
-local initCorner2 = Instance.new("UICorner")
+local initCorner2 = Instance.new('UICorner')
 initCorner2.CornerRadius = UDim.new(0, 4)
 initCorner2.Parent = BlockButtonButton
-
-local initStroke2 = Instance.new("UIStroke")
+local initStroke2 = Instance.new('UIStroke')
 initStroke2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 initStroke2.Color = Color3.fromRGB(255, 100, 100)
-initStroke2.Thickness = 1
+initStroke2.Thickness = 1.0
 initStroke2.Transparency = 0.3
 initStroke2.Parent = BlockButtonButton
-
 BlockButtonButton.MouseButton1Click:Connect(function()
-	local player = game.Players:FindFirstChild(partnerBox.Text)
-
-	if player then
-		local success, err = pcall(function()
-			game:GetService("StarterGui"):SetCore("BlockPlayer", player)
-		end)
-
-		if not success then
-			warn(err)
-		end
-	else
-		warn("Player not found: " .. partnerBox.Text)
-	end
+   BlockPlayer(Players[partnerBox.Text])
 end)
 
-local spacer7 = Instance.new("Frame")
+local spacer7 = Instance.new('Frame')
 spacer7.Size = UDim2.new(1, 0, 0, 3)
 spacer7.BackgroundTransparency = 1
 spacer7.Parent = controlFrame
