@@ -2731,78 +2731,14 @@ initStroke.Thickness = 1.0
 initStroke.Transparency = 0.3
 initStroke.Parent = initButton
 
--- =========================================
--- BLOCK PLAYER FUNCTION
--- =========================================
+-- BLOCK FUNCTION
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local TweenService = game:GetService("TweenService")
 
--- Selected player (set when clicking a user in your user list)
+-- Update this if you already track a selected player
 local selectedPlayerName = nil
 
--- Example: Create the Block Button in your GUI
-local blockButton = Instance.new("TextButton")
-blockButton.Size = UDim2.new(1, 0, 0, 22)
-blockButton.Position = UDim2.new(0, 0, 0, 230) -- adjust based on your layout
-blockButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-blockButton.BackgroundTransparency = 0.2
-blockButton.Text = "Block Player"
-blockButton.Font = Enum.Font.FredokaOne
-blockButton.TextSize = 10
-blockButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-blockButton.Parent = mainFrame -- change to your main GUI frame
-
-local blockCorner = Instance.new("UICorner")
-blockCorner.CornerRadius = UDim.new(0, 4)
-blockCorner.Parent = blockButton
-
-local blockStroke = Instance.new("UIStroke")
-blockStroke.Color = Color3.fromRGB(255, 100, 100)
-blockStroke.Thickness = 1.0
-blockStroke.Transparency = 0.3
-blockStroke.Parent = blockButton
-
--- =============================
--- BLOCK PLAYER FUNCTION
--- =============================
-local function blockPlayer(playerName)
-    if not playerName or playerName == "" then
-        warn("No player selected to block!")
-        return
-    end
-
-    local player = Players:FindFirstChild(playerName)
-    if not player then
-        warn("Player not found: " .. playerName)
-        return
-    end
-
-    -- If your game has a RemoteEvent to block players
-    if ReplicatedStorage:FindFirstChild("BlockPlayerEvent") then
-        ReplicatedStorage.BlockPlayerEvent:FireServer(player)
-        print("Sent server request to block: " .. player.Name)
-    else
-        -- Fallback: just notify locally
-        print("Blocked player locally: " .. player.Name)
-    end
-end
-
--- =============================
--- BUTTON CLICK FUNCTION
--- =============================
-blockButton.MouseButton1Click:Connect(function()
-    if selectedPlayerName then
-        blockPlayer(selectedPlayerName)
-    else
-        warn("Please select a player first!")
-    end
-end)
-
--- =============================
--- SET SELECTED PLAYER WHEN CLICKING USER LIST
--- =============================
--- Replace `userListButtons` with your existing user buttons table
+-- Track selection from your user list buttons
 for _, button in ipairs(userListButtons) do
     button.MouseButton1Click:Connect(function()
         local nameLabel = button:FindFirstChildOfClass("TextLabel")
@@ -2812,6 +2748,57 @@ for _, button in ipairs(userListButtons) do
         end
     end)
 end
+
+-- Hook into your existing block button
+blockButton.MouseButton1Click:Connect(function()
+    if not selectedPlayerName then
+        warn("No player selected!")
+        return
+    end
+
+    local player = Players:FindFirstChild(selectedPlayerName)
+    if not player then
+        warn("Player not found: " .. selectedPlayerName)
+        return
+    end
+
+    -- Fire the server event to block the player (replace with your game's actual event if different)
+    if ReplicatedStorage:FindFirstChild("BlockPlayerEvent") then
+        ReplicatedStorage.BlockPlayerEvent:FireServer(player)
+        print("Blocked player: " .. player.Name)
+    else
+        -- fallback/log only
+        print("Blocked player locally: " .. player.Name)
+    end
+end)
+
+-- SMALLER Block Player Button
+local BlockButtonButton = Instance.new('TextButton')
+BlockButtonButton.Size = UDim2.new(1, 0, 0, 22)
+BlockButtonButton.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+BlockButtonButton.BackgroundTransparency = 0.2
+BlockButtonButton.Text = 'Block Player'
+BlockButtonButton.Font = Enum.Font.FredokaOne
+BlockButtonButton.TextSize = 10
+BlockButtonButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+BlockButtonButton.Parent = controlFrame
+local initCorner2 = Instance.new('UICorner')
+initCorner2.CornerRadius = UDim.new(0, 4)
+initCorner2.Parent = BlockButtonButton
+local initStroke2 = Instance.new('UIStroke')
+initStroke2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+initStroke2.Color = Color3.fromRGB(255, 100, 100)
+initStroke2.Thickness = 1.0
+initStroke2.Transparency = 0.3
+initStroke2.Parent = BlockButtonButton
+BlockButtonButton.MouseButton1Click:Connect(function()
+   BlockPlayer(Players[partnerBox.Text])
+end)
+
+local spacer7 = Instance.new('Frame')
+spacer7.Size = UDim2.new(1, 0, 0, 3)
+spacer7.BackgroundTransparency = 1
+spacer7.Parent = controlFrame
 
 -- MAKE PARTNER ACCEPT BUTTON
 local acceptButton = Instance.new('TextButton')
