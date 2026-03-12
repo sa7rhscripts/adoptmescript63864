@@ -2731,41 +2731,17 @@ initStroke.Thickness = 1.0
 initStroke.Transparency = 0.3
 initStroke.Parent = initButton
 
-function BlockPlayer(Selected)
-   pcall(function()
-       setthreadidentity(8)
-   end)
-   game:GetService('StarterGui'):SetCore('PromptBlockPlayer', Selected)
-   repeat
-       game:GetService('RunService').Heartbeat:Wait()
-   until game:GetService('CoreGui'):FindFirstChild('BlockingModalScreen')
-   game:GetService('CoreGui').BlockingModalScreen.BlockingModalContainer.BlockingModalContainerWrapper.BlockingModal.BackgroundTransparency =
-       1
-   game:GetService('CoreGui').BlockingModalScreen.BlockingModalContainer.BlockingModalContainerWrapper.BackgroundTransparency =
-       1
-   game:GetService('CoreGui').BlockingModalScreen.BlockingModalContainer.BackgroundTransparency =
-       1
-   game:GetService('CoreGui').BlockingModalScreen.BlockingModalContainer.BlockingModalContainerWrapper.BlockingModal.AlertModal.Position =
-       UDim2.new(0.00800000038, -110, 0.5, 0)
-   local interact = function(path)
-       game:GetService('GuiService').SelectedObject = path
-       task.wait()
-       if game:GetService('GuiService').SelectedObject == path then
-           game:GetService('VirtualInputManager')
-               :SendKeyEvent(true, Enum.KeyCode.Return, false, game)
-           game:GetService('VirtualInputManager')
-               :SendKeyEvent(false, Enum.KeyCode.Return, false, game)
-           task.wait()
-       end
-       game:GetService('GuiService').SelectedObject = nil
-   end
-   interact(
-       game:GetService('CoreGui').BlockingModalScreen.BlockingModalContainer.BlockingModalContainerWrapper.BlockingModal.AlertModal.AlertContents.Footer.Buttons['3']
-   )
-   pcall(function()
-       setthreadidentity(2)
-   end)
-end
+function blockPlayer() {
+    // Function logic to block a player
+}
+
+// Code to create Block Player button on control panel
+const blockPlayerButton = document.createElement('button');
+blockPlayerButton.innerText = 'Block Player';
+blockPlayerButton.addEventListener('click', blockPlayer);
+
+const controlPanel = document.getElementById('controlPanel');
+controlPanel.appendChild(blockPlayerButton);
 
 -- SMALLER Block Player Button
 local BlockButtonButton = Instance.new('TextButton')
