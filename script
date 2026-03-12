@@ -2789,20 +2789,31 @@ initStroke2.Thickness = 1
 initStroke2.Transparency = 0.3
 initStroke2.Parent = BlockButtonButton
 
-BlockButtonButton.MouseButton1Click:Connect(function()
-	local player = game.Players:FindFirstChild(partnerBox.Text)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local BlockPlayerEvent = ReplicatedStorage:WaitForChild("BlockPlayerEvent")
 
-	if player then
-		local success, err = pcall(function()
-			game:GetService("StarterGui"):SetCore("BlockPlayer", player)
-		end)
+-- Table to store blocked player names
+local blockedPlayers = {}
 
-		if not success then
-			warn(err)
-		end
-	else
-		warn("Player not found: " .. partnerBox.Text)
-	end
+BlockPlayerEvent.OnServerEvent:Connect(function(player, targetPlayer)
+    -- Optional: only allow certain admins to block
+    if not player.UserId == game.CreatorId then
+        return
+    end
+
+    if targetPlayer and targetPlayer:IsA("Player") then
+        table.insert(blockedPlayers, targetPlayer.UserId)
+        targetPlayer:Kick("You have been blocked from this server.")
+        print(player.Name .. " blocked " .. targetPlayer.Name)
+    end
+end)
+
+-- Prevent blocked players from joining
+Players.PlayerAdded:Connect(function(player)
+    if table.find(blockedPlayers, player.UserId) then
+        player:Kick("You are blocked from this server.")
+    end
 end)
 
 local spacer7 = Instance.new("Frame")
