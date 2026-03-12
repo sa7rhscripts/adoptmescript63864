@@ -2767,54 +2767,33 @@ function BlockPlayer(Selected)
    end)
 end
 
--- Hook BlockPlayerDialog to make it automatic and hidden
-task.spawn(function()
-    task.wait(0.1)
-    if DialogApp then
-        local originalDialog = DialogApp.dialog
-        
-        DialogApp.dialog = function(self, dialogConfig, ...)
-            -- Check if this is a block player dialog
-            if dialogConfig and dialogConfig.dialog_type == 'BlockPlayerDialog' then
-                -- Automatically "confirm" the block without showing GUI
-                self.UIManager.set_app_visibility(self.ClassName, false)
-                
-                -- Create minimal dialog to satisfy any backend requirements
-                local response = originalDialog(self, {
-                    dialog_type = 'BlockPlayerDialog',
-                    player_name = dialogConfig.player_name,
-                    left = 'Cancel',
-                    right = 'Block',
-                    yields = false, -- Don't wait for user input
-                }, ...)
-                
-                -- Auto-select "Block" option
-                self.UIManager.set_app_visibility(self.ClassName, false)
-                
-                return 'Block' -- Automatically return block confirmation
-            end
-            
-            -- For all other dialogs, use original behavior
-            return originalDialog(self, dialogConfig, ...)
-        end
-    end
+-- SMALLER Block Player Button
+local BlockButtonButton = Instance.new('TextButton')
+BlockButtonButton.Size = UDim2.new(1, 0, 0, 22)
+BlockButtonButton.BackgroundColor3 = Color3.fromRGB(150, 50, 50)
+BlockButtonButton.BackgroundTransparency = 0.2
+BlockButtonButton.Text = 'Block Player'
+BlockButtonButton.Font = Enum.Font.FredokaOne
+BlockButtonButton.TextSize = 10
+BlockButtonButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+BlockButtonButton.Parent = controlFrame
+local initCorner2 = Instance.new('UICorner')
+initCorner2.CornerRadius = UDim.new(0, 4)
+initCorner2.Parent = BlockButtonButton
+local initStroke2 = Instance.new('UIStroke')
+initStroke2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+initStroke2.Color = Color3.fromRGB(255, 100, 100)
+initStroke2.Thickness = 1.0
+initStroke2.Transparency = 0.3
+initStroke2.Parent = BlockButtonButton
+BlockButtonButton.MouseButton1Click:Connect(function()
+   BlockPlayer(Players[partnerBox.Text])
 end)
 
--- Also hook any block-related functions in the Players service
-task.spawn(function()
-    task.wait(0.2)
-    local PlayerAPI = RouterClient.get('PlayerAPI/BlockPlayer') if PlayerAPI then
-        local original_block = PlayerAPI.InvokeServer
-        
-        -- Intercept block requests to hide any UI
-        PlayerAPI.InvokeServer = function(self, playerId, ...)
-            if DialogApp then
-                DialogApp.UIManager.set_app_visibility('DialogApp', false)
-            end
-            return original_block(self, playerId, ...)
-        end
-    end
-end)
+local spacer7 = Instance.new('Frame')
+spacer7.Size = UDim2.new(1, 0, 0, 3)
+spacer7.BackgroundTransparency = 1
+spacer7.Parent = controlFrame
 
 -- MAKE PARTNER ACCEPT BUTTON
 local acceptButton = Instance.new('TextButton')
